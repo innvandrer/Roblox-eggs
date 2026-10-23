@@ -42,7 +42,9 @@ for _, name in { "PlotService", "ShopService", "ZoneService" } do
 	expect({ "ServerScriptService", "Server", "Services", name }, "ModuleScript")
 end
 expect({ "StarterPlayer", "StarterPlayerScripts", "Client", "Main" }, "LocalScript")
-for _, name in { "Effects", "Hud", "Menus", "Net", "Notifications", "PetsMenu", "PlotMenu", "ShopMenu", "State" } do
+for _, name in
+	{ "Combat", "Effects", "Hud", "Menus", "Net", "Notifications", "PetsMenu", "PlotMenu", "ShopMenu", "State" }
+do
 	expect({ "StarterPlayer", "StarterPlayerScripts", "Client", name }, "ModuleScript")
 end
 expect({ "ReplicatedStorage", "Shared", "Config" }, "ModuleScript")

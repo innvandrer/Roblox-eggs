@@ -1,6 +1,7 @@
 --!strict
 local Players = game:GetService("Players")
 
+local Combat = require(script.Parent.Combat)
 local Effects = require(script.Parent.Effects)
 local Hud = require(script.Parent.Hud)
 local Net = require(script.Parent.Net)
@@ -24,6 +25,7 @@ PetsMenu.create(screen)
 PlotMenu.create(screen)
 Effects.init()
 World.init()
+Combat.init()
 
 Net.Notify:Connect(function(text: string, kind: string?)
 	if type(text) == "string" then

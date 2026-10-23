@@ -1,7 +1,6 @@
 --!strict
 -- Player loadout (weapon tool, armor, max health), server-side hit checks and kill rewards.
 
-local Debris = game:GetService("Debris")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -43,16 +42,8 @@ local function getCharacterParts(player: Player): (Model?, Humanoid?, BasePart?)
 	return character, humanoid, root
 end
 
-local function playSlash(tool: Tool)
-	-- The default character Animate script plays its slash animation when it sees this value.
-	local anim = Instance.new("StringValue")
-	anim.Name = "toolanim"
-	anim.Value = "Slash"
-	anim.Parent = tool
-	Debris:AddItem(anim, 1)
-end
-
-local function attack(player: Player, tool: Tool)
+-- Called from the client's Attack remote; the client plays the swing animation itself.
+local function attack(player: Player)
 	local data = DataService.get(player)
 	local _, humanoid, root = getCharacterParts(player)
 	if not data or not humanoid or not root or humanoid.Health <= 0 then
@@ -65,7 +56,6 @@ local function attack(player: Player, tool: Tool)
 		return
 	end
 	lastAttack[player] = now
-	playSlash(tool)
 
 	local look = Vector3.new(root.CFrame.LookVector.X, 0, root.CFrame.LookVector.Z).Unit
 	local origin = Vector3.new(root.Position.X, 0, root.Position.Z)
@@ -96,7 +86,7 @@ local function attack(player: Player, tool: Tool)
 	Net.Effect:Fire(player, "Damage", popupAt, damage)
 end
 
-local function buildTool(player: Player, weapon: WeaponsConfig.Weapon): Tool
+local function buildTool(weapon: WeaponsConfig.Weapon): Tool
 	local tool = Instance.new("Tool")
 	tool.Name = weapon.Name
 	tool.ToolTip = `{weapon.Damage} damage`
@@ -129,10 +119,6 @@ local function buildTool(player: Player, weapon: WeaponsConfig.Weapon): Tool
 	weld.Part1 = guard
 	weld.C0 = CFrame.new(0, 0, -weapon.Length / 2 + 1)
 	weld.Parent = handle
-
-	tool.Activated:Connect(function()
-		attack(player, tool)
-	end)
 	return tool
 end
 
@@ -208,7 +194,7 @@ function CombatService.refreshLoadout(player: Player, healFull: boolean?)
 	if not backpack then
 		return
 	end
-	local tool = buildTool(player, weapon)
+	local tool = buildTool(weapon)
 	tool.Parent = backpack
 	humanoid:EquipTool(tool)
 end
@@ -265,6 +251,10 @@ local function onCharacterAdded(player: Player, character: Model)
 	if not character:FindFirstChild("UpperTorso") and not character:FindFirstChild("Torso") then
 		character:WaitForChild("UpperTorso", 3)
 	end
+	-- Equipping before the hand exists leaves the sword unwelded, so it falls out of the world.
+	if not character:FindFirstChild("RightHand") and not character:FindFirstChild("Right Arm") then
+		character:WaitForChild("RightHand", 3)
+	end
 	if player.Character == character then
 		CombatService.refreshLoadout(player, true)
 	end
@@ -274,6 +264,7 @@ function CombatService.init()
 	MonsterService.onKilled = onKilled
 	MonsterService.onAttackPlayer = onAttackPlayer
 	MonsterService.canTarget = canTarget
+	Net.Attack:Connect(attack)
 
 	local function watch(player: Player)
 		player.CharacterAdded:Connect(function(character)

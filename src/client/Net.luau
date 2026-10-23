@@ -9,6 +9,7 @@ local Net = {
 	State = comm:GetProperty("State"),
 	Notify = comm:GetSignal("Notify"),
 	Effect = comm:GetSignal("Effect"),
+	Attack = comm:GetSignal("Attack"),
 }
 
 local functions: { [string]: (...any) -> ...any } = {}

@@ -15,4 +15,6 @@ return {
 	Notify = comm:CreateSignal("Notify"),
 	-- (kind: string, ...) one-off visual effects such as damage popups and egg drops.
 	Effect = comm:CreateSignal("Effect"),
+	-- Client -> server: the player swung their weapon. Hit detection happens on the server.
+	Attack = comm:CreateSignal("Attack"),
 }
