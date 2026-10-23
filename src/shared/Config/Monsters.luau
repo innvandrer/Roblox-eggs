@@ -1,0 +1,78 @@
+--!strict
+-- EggChance is the chance (0-1) that a kill drops an egg. The egg's rarity is rolled from the zone's EggWeights.
+
+export type Monster = {
+	Name: string,
+	Health: number,
+	Damage: number,
+	AttackCooldown: number,
+	AttackRange: number,
+	AggroRange: number,
+	Speed: number,
+	Coins: number,
+	XP: number,
+	EggChance: number,
+	Size: Vector3,
+	Color: Color3,
+}
+
+local Monsters: { [string]: Monster } = {
+	Slime = {
+		Name = "Slime",
+		Health = 30,
+		Damage = 5,
+		AttackCooldown = 1.2,
+		AttackRange = 4,
+		AggroRange = 25,
+		Speed = 8,
+		Coins = 5,
+		XP = 8,
+		EggChance = 0.25,
+		Size = Vector3.new(3, 2.5, 3),
+		Color = Color3.fromRGB(90, 220, 90),
+	},
+	Goblin = {
+		Name = "Goblin",
+		Health = 70,
+		Damage = 9,
+		AttackCooldown = 1.0,
+		AttackRange = 5,
+		AggroRange = 30,
+		Speed = 12,
+		Coins = 12,
+		XP = 18,
+		EggChance = 0.3,
+		Size = Vector3.new(2.5, 4, 2.5),
+		Color = Color3.fromRGB(70, 140, 50),
+	},
+	Skeleton = {
+		Name = "Skeleton",
+		Health = 220,
+		Damage = 18,
+		AttackCooldown = 1.0,
+		AttackRange = 5,
+		AggroRange = 35,
+		Speed = 13,
+		Coins = 40,
+		XP = 55,
+		EggChance = 0.35,
+		Size = Vector3.new(2.5, 5, 2.5),
+		Color = Color3.fromRGB(230, 230, 215),
+	},
+	Ogre = {
+		Name = "Ogre",
+		Health = 600,
+		Damage = 35,
+		AttackCooldown = 1.6,
+		AttackRange = 7,
+		AggroRange = 35,
+		Speed = 9,
+		Coins = 120,
+		XP = 150,
+		EggChance = 0.5,
+		Size = Vector3.new(5, 7, 5),
+		Color = Color3.fromRGB(120, 90, 160),
+	},
+}
+
+return Monsters
